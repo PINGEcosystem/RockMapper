@@ -1,2 +1,2 @@
 # HabiMapper
-Interface for predicting and mapping habitat (substrates) from any side-scan sonar mosaic. 
+Interface for predicting and mapping benthic habitat (substrates) from any side-scan sonar mosaic. 

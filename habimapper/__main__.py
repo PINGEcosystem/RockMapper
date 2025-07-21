@@ -1,0 +1,40 @@
+'''
+Copyright (c) 2025 Cameron S. Bodine
+'''
+
+#########
+# Imports
+import os, sys
+
+# Add 'habimapper' to the path, may not need after pypi package...
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PACKAGE_DIR = os.path.dirname(SCRIPT_DIR)
+sys.path.append(PACKAGE_DIR)
+
+# Default function to run
+if len(sys.argv) == 1:
+    to_do = 'gui'
+else:
+    to_do = sys.argv[1]
+
+#=======================================================================
+def main(process):
+    '''
+    '''
+
+    from .version import __version__
+    print("\n\nHabiMapper v{}".format(__version__))
+
+    # Launch GUI
+    if process == 'gui':
+        print('\n\nLaunching HabiMapper gui...\n\n')
+
+        from habimapper.gui_main import gui
+        gui()
+
+    return
+
+#=======================================================================
+if __name__ == "__main__":
+    main(to_do)
+

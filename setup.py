@@ -9,7 +9,7 @@ exec(open('habimapper/version.py').read())
 setup(
     name="habimapper",
     version=__version__,
-    author="Cameron Bodine",
+    author="Cameron Bodine, Wyatt Wolfenkoehler",
     author_email="bodine.cs@gmail.email",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
@@ -17,7 +17,7 @@ setup(
     packages=find_packages(),
     # data_files=[("pingmapper_config", ["pingmapper/default_params.json"])],
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
@@ -43,8 +43,8 @@ setup(
     python_requires="<3.13",
     install_requires=['pinginstaller', 'pingwizard'],
     project_urls={
-        "Issues": "https://github.com/CameronBodine/HabiMapper/issues",
-        "GitHub":"https://github.com/CameronBodine/HabiMapper",
-        "Homepage":"https://cameronbodine.github.io/HabiMapper/",
+        "Issues": "https://github.com/PINGEcosystem/HabiMapper/issues",
+        "GitHub":"https://github.com/PINGEcosystem/HabiMapper",
+        "Homepage":"https://PINGEcosystem.github.io/HabiMapper/",
     },
 )

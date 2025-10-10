@@ -30,14 +30,14 @@ def gui():
     modelDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\seg_gym\20250628_test\fold_0\RockMapper'
     mosaicFileType = '.tif'
     outDirTop = r'Z:\scratch'
-    projName = 'HabiMapper_Test_idx_bs30'
+    projName = 'HabiMapper_Test_idx_DL_weights'
 
     epsg = 32616
 
     windowSize_m = (18, 18)
     window_stride = 6
     minArea_percent = 0.5
-    threadCnt = 0.5
+    threadCnt = 0.10
 
     predBatchSize = 30
 

@@ -10,6 +10,7 @@ from glob import glob
 import pandas as pd
 import geopandas as gpd
 import json
+import shutil
 
 from rockmapper.utils import printUsage#, avg_npz_files, map_npzs
 
@@ -26,7 +27,7 @@ sys.path.insert(0, 'src')
 
 from pingtile.mosaic2tile import doMosaic2tile
 from pingtile.utils import avg_npz_files, map_npzs, mosaic_maps
-from pingseg.seg_gym import seg_gym_folder
+from pingseg.seg_gym import seg_gym_folder, seg_gym_folder_noDL
 
 #=======================================================================
 def do_work(
@@ -48,6 +49,9 @@ def do_work(
     start_time = time.time()
 
     outDir = os.path.join(outDirTop, projName)
+
+    if os.path.exists(outDir):
+        shutil.rmtree(outDir)
 
     if not os.path.exists(outDir):
         os.makedirs(outDir)
@@ -162,8 +166,7 @@ def do_work(
     print("\nPrediction Complete!")
     print("Time (s):", round(time.time() - start_time, ndigits=1))
     printUsage()
-
-
+    
 
     # For Debug #
     #######################

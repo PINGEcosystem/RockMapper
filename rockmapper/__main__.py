@@ -22,14 +22,14 @@ def main(process):
     '''
     '''
 
-    from .version import __version__
-    print("\n\nHabiMapper v{}".format(__version__))
+    from rockmapper.version import __version__
+    print("\n\nRockMapper v{}".format(__version__))
 
     # Launch GUI
     if process == 'gui':
-        print('\n\nLaunching HabiMapper gui...\n\n')
+        print('\n\nLaunching RockMapper gui...\n\n')
 
-        from habimapper.gui_main import gui
+        from rockmapper.gui_main import gui
         gui()
 
     return

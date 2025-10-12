@@ -4,10 +4,10 @@ from pathlib import Path
 DESCRIPTION = 'Interface for predicting and mapping benthic habitat (substrates) from any side-scan sonar mosaic.'
 LONG_DESCRIPTION = Path('README.md').read_text()
 
-exec(open('habimapper/version.py').read())
+exec(open('rockmapper/version.py').read())
 
 setup(
-    name="habimapper",
+    name="rockmapper",
     version=__version__,
     author="Cameron Bodine, Wyatt Wolfenkoehler",
     author_email="bodine.cs@gmail.email",

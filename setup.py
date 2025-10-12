@@ -43,8 +43,8 @@ setup(
     python_requires="<3.13",
     install_requires=['pinginstaller', 'pingwizard'],
     project_urls={
-        "Issues": "https://github.com/PINGEcosystem/HabiMapper/issues",
-        "GitHub":"https://github.com/PINGEcosystem/HabiMapper",
-        "Homepage":"https://PINGEcosystem.github.io/HabiMapper/",
+        "Issues": "https://github.com/PINGEcosystem/RockMapper/issues",
+        "GitHub":"https://github.com/PINGEcosystem/RockMapper",
+        # "Homepage":"https://PINGEcosystem.github.io/HabiMapper/",
     },
 )

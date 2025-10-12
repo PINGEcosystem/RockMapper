@@ -21,3 +21,4 @@ dependencies:
       - tensorflow
       - tf-keras
       - transformers
+      - opencv-python

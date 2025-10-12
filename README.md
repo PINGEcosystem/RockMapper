@@ -26,7 +26,7 @@ Wolfenkoehler, Bodine, Long (*forthcoming...*)
 2. Open the [`Miniforge`](https://conda-forge.org/download/) prompt.
 3. Install `PINGInstaller`:
     ```
-    pip install pinginstaller
+    pip install --force-reinstall pinginstaller
     ```
 4. Install `RockMapper`.
     ```

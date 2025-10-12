@@ -14,6 +14,7 @@ dependencies:
   - h5py
   - pip
   - pip:
+      - rockmapper
       - pingseg
       - pingtile
       - doodleverse_utils

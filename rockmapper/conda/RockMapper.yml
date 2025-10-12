@@ -1,0 +1,23 @@
+name: rockmapper
+channels:
+  - conda-forge
+dependencies:
+  - python<3.13
+  - gdal
+  - numpy
+  - git
+  - pandas
+  - geopandas
+  - scikit-image
+  - joblib
+  - rasterio
+  - h5py
+  - pip
+  - pip:
+      - pingseg
+      - pingtile
+      - doodleverse_utils
+      - psutil
+      - tensorflow
+      - tf-keras
+      - transformers

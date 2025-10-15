@@ -76,7 +76,7 @@ def gui():
     mapRast = False
     mapShp = True
 
-    epsg = 32616
+    epsg = 32615
 
     windowSize_m = (18, 18)
     window_stride = 9

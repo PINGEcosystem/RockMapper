@@ -23,3 +23,4 @@ dependencies:
       - tf-keras
       - transformers
       - opencv-python
+      - rsa

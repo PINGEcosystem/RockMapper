@@ -12,23 +12,27 @@ import geopandas as gpd
 import json
 import shutil
 import requests, zipfile
+from joblib import Parallel, delayed
+from tqdm import tqdm
 
 from rockmapper.utils import printUsage#, avg_npz_files, map_npzs
 
-# # Debug
-# pingTilePath = os.path.normpath('../PINGTile')
-# pingTilePath = os.path.abspath(pingTilePath)
-# sys.path.insert(0, pingTilePath)
-# sys.path.insert(0, 'src')
+# Debug
+pingTilePath = os.path.normpath('../PINGTile')
+pingTilePath = os.path.abspath(pingTilePath)
+sys.path.insert(0, pingTilePath)
+sys.path.insert(0, 'src')
+debug = True
 
-# pingSegPath = os.path.normpath('../PINGSeg')
-# pingSegPath = os.path.abspath(pingSegPath)
-# sys.path.insert(0, pingSegPath)
-# sys.path.insert(0, 'src')
+pingSegPath = os.path.normpath('../PINGSeg')
+pingSegPath = os.path.abspath(pingSegPath)
+sys.path.insert(0, pingSegPath)
+sys.path.insert(0, 'src')
 
 from pingtile.mosaic2tile import doMosaic2tile
-from pingtile.utils import avg_npz_files, map_npzs, mosaic_maps, maps2Shp
+from pingtile.utils import avg_npz_files, map_npzs, mosaic_maps, maps2Shp, apply_son_mask
 from pingseg.seg_gym import seg_gym_folder, seg_gym_folder_noDL
+debug = False
 
 # Set ROCKMAPPER utils dir
 USER_DIR = os.path.expanduser('~')
@@ -60,8 +64,8 @@ def do_work(
 
     outDir = os.path.join(outDirTop, projName)
 
-    if os.path.exists(outDir):
-        shutil.rmtree(outDir)
+    # if os.path.exists(outDir):
+    #     shutil.rmtree(outDir)
 
     if not os.path.exists(outDir):
         os.makedirs(outDir)
@@ -166,56 +170,170 @@ def do_work(
 
 
 
-    # # For debug
-    # mosaics = mosaics[:1]
-
-
-
-
-
-
-    ###############################
-    # Generate moving window images
-
-    print('\n\nTiling Mosaics...\n\n')
-
-    imagesAll = []
-
-    for mosaic in mosaics:
-        r = doMosaic2tile(
-            inFile = mosaic,
-            outDir = outSonDir,
-            windowSize = windowSize_m,
-            windowStride_m = window_stride,
-            outName = projName,
-            epsg_out = epsg,
-            threadCnt = threadCnt,
-            target_size = config['TARGET_SIZE'],
-            minArea_percent = minArea_percent,
-        )
-
-        imagesAll.append(r)
-    
-    imagesDF = pd.concat(imagesAll, axis=0, ignore_index=True)
-
     # For debug
+    if debug:
+        mosaics = mosaics[:1]
+
+
+    # ###############################
+    # # Generate moving window images
+
+    # print('\n\nTiling Mosaics...\n\n')
+
+    # imagesAll = []
+
+    # for mosaic in mosaics:
+    #     r = doMosaic2tile(
+    #         inFile = mosaic,
+    #         outDir = outSonDir,
+    #         windowSize = windowSize_m,
+    #         windowStride_m = window_stride,
+    #         outName = projName,
+    #         epsg_out = epsg,
+    #         threadCnt = threadCnt,
+    #         target_size = config['TARGET_SIZE'],
+    #         minArea_percent = minArea_percent,
+    #     )
+
+    #     imagesAll.append(r)
+    
+    # imagesDF = pd.concat(imagesAll, axis=0, ignore_index=True)
+
+    # # For debug
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tiles.csv')
-    imagesDF.to_csv(outDF, index=False)
+    # imagesDF.to_csv(outDF, index=False)
 
-    # Delete intermediate data
-    if deleteIntData:
-        to_delete.append(outSonDir)
+    # # Delete intermediate data
+    # if deleteIntData:
+    #     to_delete.append(outSonDir)
 
-    print('Image Tiles Generated: {}'.format(len(imagesDF)))
+    # print('Image Tiles Generated: {}'.format(len(imagesDF)))
 
-    print("\nDone!")
-    print("Time (s):", round(time.time() - start_time, ndigits=1))
-    printUsage()
+    # print("\nDone!")
+    # print("Time (s):", round(time.time() - start_time, ndigits=1))
+    # printUsage()
 
 
     # For Debug
     imagesDF = pd.read_csv(outDF)
     print(len(imagesDF))
+
+    ###################
+    # Do shadow removal
+    print('\n\nPredicting and masking shadows from sonar tiles...\n\n')
+
+    start_time = time.time()
+
+    outSonMaskedDir = os.path.join(outDir, 'images_mask_npz')
+
+    if not os.path.exists(outSonMaskedDir):
+        os.makedirs(outSonMaskedDir)
+
+    # Get shadow model
+
+    shadowModelDir = os.path.join(GV_UTILS_DIR, 'models', 'PINGMapperv2.0_SegmentationModelv1.0')
+
+    seg_model = os.path.basename(shadowModelDir)
+
+    if not os.path.exists(shadowModelDir) or len(os.listdir(shadowModelDir)) == 0:
+        os.makedirs(shadowModelDir, exist_ok=True)
+
+        url = f'https://zenodo.org/records/10093642/files/PINGMapperv2.0_SegmentationModelsv1.0.zip?download=1'
+        print(f'\n\nDownloading shadow model (v1.0): {url}')
+
+        filename = shadowModelDir + '.zip'
+        try:
+            # stream download to avoid memory spikes
+            with requests.get(url, stream=True, timeout=60) as r:
+                r.raise_for_status()
+                with open(filename, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+
+            # quick validation
+            if not zipfile.is_zipfile(filename):
+                # read beginning of file to help debug (text/html error pages)
+                with open(filename, 'rb') as fh:
+                    head = fh.read(512).decode('utf-8', errors='replace')
+                os.remove(filename)
+                raise RuntimeError(f"Downloaded file is not a zip file. Server response starts with: {head!r}")
+
+            # extract safely
+            with zipfile.ZipFile(filename, 'r') as z_fp:
+                z_fp.extractall(shadowModelDir)
+
+            os.remove(filename)
+            print('Model download and extraction success!')
+
+        except requests.RequestException as e:
+            # network/HTTP problem
+            if os.path.exists(filename):
+                os.remove(filename)
+            raise RuntimeError(f"Failed to download model from {url}: {e}") from e
+        except zipfile.BadZipFile as e:
+            if os.path.exists(filename):
+                os.remove(filename)
+            raise RuntimeError("Downloaded model archive is corrupted or not a zip file.") from e
+        
+    shadowModelDir = os.path.join(shadowModelDir, 'Shadow_Segmentation_unet_v1.0')
+        
+    # imagesDF = seg_gym_folder(imgDF=imagesDF, modelDir=shadowModelDir, out_dir=outSonMaskedDir, batch_size=predBatchSize, threadCnt=threadCnt)
+
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_shadow.csv')
+    imagesDF.to_csv(outDF, index=False)
+    gdf = imagesDF
+
+    # Delete intermediate data
+    if deleteIntData:
+        to_delete.append(outSonMaskedDir)
+
+    print("\nPrediction Complete!")
+    print("Time (s):", round(time.time() - start_time, ndigits=1))
+    printUsage()
+
+    # ###############################
+    # # Average overlapping npz files
+    # print('\n\nAveraging overlapping shadow predictions...\n\n')
+    # start_time = time.time()
+
+    # out_shadow_avg_npz = os.path.join(outDir, 'images_mask_npz_avg')
+
+    # if not os.path.exists(out_shadow_avg_npz):
+    #     os.makedirs(out_shadow_avg_npz)
+
+    # gdf = avg_npz_files(df=imagesDF, in_dir=outSonMaskedDir, out_dir=out_shadow_avg_npz, outName=projName, windowSize_m=windowSize_m, stride=windowSize_m[0], epsg=epsg, threadCnt=threadCnt)
+
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz_shadow.csv')
+    # gdf.to_csv(outDF, index=False)
+
+    # # Delete intermediate data
+    # if deleteIntData:
+    #     to_delete.append(out_shadow_avg_npz)
+
+    # print("\nDone!")
+    # print("Time (s):", round(time.time() - start_time, ndigits=1))
+    # printUsage()
+
+
+    # # For debug
+    # out_avg_npz = os.path.join(outDir, 'preds_avg_npz')
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz_shadow.csv')
+    # gdf = pd.read_csv(outDF)
+
+    ##############################################
+    # Mask the sonar tiles based on shadow avg npz
+
+    print('\n\nMasking sonar tiles based on shadow predictions...\n\n')
+    start_time = time.time()
+
+    outSonMaskedTilesDir = os.path.join(outDir, 'images_masked_tiles')
+
+    if not os.path.exists(outSonMaskedTilesDir):
+        os.makedirs(outSonMaskedTilesDir)
+
+    Parallel(n_jobs=threadCnt)(delayed(apply_son_mask)(row, outSonMaskedTilesDir) for idx, row in tqdm(gdf.iterrows(), total=gdf.shape[0]))
+
 
 
     ################################
@@ -238,6 +356,8 @@ def do_work(
     print("\nPrediction Complete!")
     print("Time (s):", round(time.time() - start_time, ndigits=1))
     printUsage()
+
+    
 
 
     # # For Debug #
@@ -431,9 +551,6 @@ def do_work(
     if deleteIntData:
         print('\n\nDeleting intermediate data...\n\n')
         start_time = time.time()
-
-        for d in to_delete:
-            shutil.rmtree(d, ignore_errors=True)
 
         for d in to_delete:
             shutil.rmtree(d, ignore_errors=True)

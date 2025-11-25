@@ -12,6 +12,8 @@ import geopandas as gpd
 import json
 import shutil
 import requests, zipfile
+import gc
+gc.enable()
 
 from rockmapper.utils import printUsage#, avg_npz_files, map_npzs
 
@@ -199,8 +201,8 @@ def do_work(
     imagesDF = pd.concat(imagesAll, axis=0, ignore_index=True)
 
     # For debug
-    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tiles.csv')
-    imagesDF.to_csv(outDF, index=False)
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tiles.csv')
+    # imagesDF.to_csv(outDF, index=False)
 
     # Delete intermediate data
     if deleteIntData:
@@ -213,9 +215,9 @@ def do_work(
     printUsage()
 
 
-    # For Debug
-    imagesDF = pd.read_csv(outDF)
-    print(len(imagesDF))
+    # # For Debug
+    # imagesDF = pd.read_csv(outDF)
+    # print(len(imagesDF))
 
 
     ################################
@@ -228,8 +230,9 @@ def do_work(
 
     imagesDF = seg_gym_folder(imgDF=imagesDF, modelDir=modelDir, out_dir=out_npz, batch_size=predBatchSize, threadCnt=threadCnt)
 
-    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
-    imagesDF.to_csv(outDF, index=False)
+    # # For debug
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
+    # imagesDF.to_csv(outDF, index=False)
 
     # Delete intermediate data
     if deleteIntData:
@@ -307,10 +310,10 @@ def do_work(
 
 
 
-    # For debug
-    out_npz = os.path.join(outDir, 'preds_npz')
-    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
-    imagesDF = pd.read_csv(outDF)
+    # # For debug
+    # out_npz = os.path.join(outDir, 'preds_npz')
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
+    # imagesDF = pd.read_csv(outDF)
 
     ###############################
     # Average overlapping npz files
@@ -324,8 +327,9 @@ def do_work(
 
     gdf = avg_npz_files(df=imagesDF, in_dir=out_npz, out_dir=out_avg_npz, outName=projName, windowSize_m=windowSize_m, stride=windowSize_m[0], epsg=epsg, threadCnt=threadCnt)
 
-    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
-    gdf.to_csv(outDF, index=False)
+    # # Debug: Save df
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
+    # gdf.to_csv(outDF, index=False)
 
     # Delete intermediate data
     if deleteIntData:
@@ -336,10 +340,10 @@ def do_work(
     printUsage()
 
 
-    # For debug
-    out_avg_npz = os.path.join(outDir, 'preds_avg_npz')
-    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
-    gdf = pd.read_csv(outDF)
+    # # For debug
+    # out_avg_npz = os.path.join(outDir, 'preds_avg_npz')
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
+    # gdf = pd.read_csv(outDF)
 
 
 
@@ -364,9 +368,9 @@ def do_work(
     printUsage()
 
 
-    # Save df
-    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_mapped_npzs.csv')
-    gdf.to_csv(outDF, index=False) 
+    # # Debug: Save df
+    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_mapped_npzs.csv')
+    # gdf.to_csv(outDF, index=False) 
 
     #############
     # Mosaic maps
@@ -428,6 +432,9 @@ def do_work(
     ##########################
     # Delete intermediate data
 
+    # First do garbage collection to close any open files
+    gc.collect()
+
     if deleteIntData:
         print('\n\nDeleting intermediate data...\n\n')
         start_time = time.time()
@@ -437,6 +444,19 @@ def do_work(
 
         for d in to_delete:
             shutil.rmtree(d, ignore_errors=True)
+
+        for d in to_delete:
+            for root, dirs, files in os.walk(d, topdown=False):
+                for name in files:
+                    try:
+                        os.remove(os.path.join(root, name))
+                    except Exception as e:
+                        print(f"Error deleting file {os.path.join(root, name)}: {e}")
+                for name in dirs:
+                    try:
+                        os.rmdir(os.path.join(root, name))
+                    except Exception as e:
+                        print(f"Error deleting directory {os.path.join(root, name)}: {e}")
 
         print("\nDone!")
         print("Time (s):", round(time.time() - start_time, ndigits=1))

@@ -124,6 +124,9 @@ def gui():
 
     print("\n\nGrand Total Processing Time: ", datetime.timedelta(seconds = round(time.time() - start_time, ndigits=0)))
     return
+
+if __name__ == "__main__":
+    gui()
 ```
 
 2. Open the file with [Visual Studio Code](https://code.visualstudio.com/).

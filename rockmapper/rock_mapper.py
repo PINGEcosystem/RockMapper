@@ -17,16 +17,16 @@ gc.enable()
 
 from rockmapper.utils import printUsage#, avg_npz_files, map_npzs
 
-# Debug
-pingTilePath = os.path.normpath('../PINGTile')
-pingTilePath = os.path.abspath(pingTilePath)
-sys.path.insert(0, pingTilePath)
-sys.path.insert(0, 'src')
+# # Debug
+# pingTilePath = os.path.normpath('../PINGTile')
+# pingTilePath = os.path.abspath(pingTilePath)
+# sys.path.insert(0, pingTilePath)
+# sys.path.insert(0, 'src')
 
-pingSegPath = os.path.normpath('../PINGSeg')
-pingSegPath = os.path.abspath(pingSegPath)
-sys.path.insert(0, pingSegPath)
-sys.path.insert(0, 'src')
+# pingSegPath = os.path.normpath('../PINGSeg')
+# pingSegPath = os.path.abspath(pingSegPath)
+# sys.path.insert(0, pingSegPath)
+# sys.path.insert(0, 'src')
 
 from pingtile.mosaic2tile import doMosaic2tile
 from pingtile.utils import avg_npz_files, map_npzs, mosaic_maps, maps2Shp

@@ -61,11 +61,13 @@ def do_work(
     '''
     '''
 
+    # debug_ = True  # For development/debugging
+
     start_time = time.time()
 
     outDir = os.path.join(outDirTop, projName)
 
-    if os.path.exists(outDir):
+    if os.path.exists(outDir) and not debug_:
         shutil.rmtree(outDir)
 
     if not os.path.exists(outDir):
@@ -164,17 +166,8 @@ def do_work(
 
 
     
-
-
-
-
-
-
-
     # # For debug
     # mosaics = mosaics[:1]
-
-
 
 
 
@@ -204,8 +197,9 @@ def do_work(
     imagesDF = pd.concat(imagesAll, axis=0, ignore_index=True)
 
     # For debug
-    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tiles.csv')
-    # imagesDF.to_csv(outDF, index=False)
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tiles.csv')
+    if debug_:
+        imagesDF.to_csv(outDF, index=False)
 
     # Delete intermediate data
     if deleteIntData:
@@ -218,9 +212,10 @@ def do_work(
     printUsage()
 
 
-    # # For Debug
-    # imagesDF = pd.read_csv(outDF)
-    # print(len(imagesDF))
+    # For Debug
+    if debug_:
+        imagesDF = pd.read_csv(outDF)
+        print(len(imagesDF))
 
 
     ################################
@@ -233,9 +228,10 @@ def do_work(
 
     imagesDF = seg_gym_folder(imgDF=imagesDF, modelDir=modelDir, out_dir=out_npz, batch_size=predBatchSize, threadCnt=threadCnt)
 
-    # # For debug
-    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
-    # imagesDF.to_csv(outDF, index=False)
+    # For debug
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
+    if debug_:
+        imagesDF.to_csv(outDF, index=False)
 
     # Delete intermediate data
     if deleteIntData:
@@ -247,10 +243,11 @@ def do_work(
 
 
 
-    # # For debug
-    # out_npz = os.path.join(outDir, 'preds_npz')
-    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
-    # imagesDF = pd.read_csv(outDF)
+    # For debug
+    out_npz = os.path.join(outDir, 'preds_npz')
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
+    if debug_:
+        imagesDF = pd.read_csv(outDF)
 
     ###############################
     # Average overlapping npz files
@@ -265,8 +262,9 @@ def do_work(
     gdf = avg_npz_files(df=imagesDF, in_dir=out_npz, out_dir=out_avg_npz, outName=projName, windowSize_m=windowSize_m, stride=windowSize_m[0], epsg=epsg, threadCnt=threadCnt)
 
     # # Debug: Save df
-    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
-    # gdf.to_csv(outDF, index=False)
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
+    if debug_:
+        gdf.to_csv(outDF, index=False)
 
     # Delete intermediate data
     if deleteIntData:
@@ -277,11 +275,11 @@ def do_work(
     printUsage()
 
 
-    # # For debug
-    # out_avg_npz = os.path.join(outDir, 'preds_avg_npz')
-    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
-    # gdf = pd.read_csv(outDF)
-
+    # For debug
+    out_avg_npz = os.path.join(outDir, 'preds_avg_npz')
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
+    if debug_:
+        gdf = pd.read_csv(outDF)
 
 
     #######################
@@ -305,9 +303,10 @@ def do_work(
     printUsage()
 
 
-    # # Debug: Save df
-    # outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_mapped_npzs.csv')
-    # gdf.to_csv(outDF, index=False) 
+    # Debug: Save df
+    outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_mapped_npzs.csv')
+    if debug_:
+        gdf.to_csv(outDF, index=False) 
 
     #############
     # Mosaic maps
@@ -358,7 +357,7 @@ def do_work(
     # First do garbage collection to close any open files
     gc.collect()
 
-    if deleteIntData:
+    if deleteIntData and not debug_:
         print('\n\nDeleting intermediate data...\n\n')
         start_time = time.time()
 

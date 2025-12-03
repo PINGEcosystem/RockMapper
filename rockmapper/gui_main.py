@@ -28,26 +28,30 @@ def gui():
     #############################
     # Hard coding for development
     seg_model = 'RockMapper_20251117_v2'
+    # seg_model = 'RockMapper_20250628_v1'
     inDir = r'D:\scratch\202511_BrushDeepKiamichi_SubstrateShadow'
-    # modelDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\seg_gym\20250628_test\fold_0\RockMapper'
-    # inDir = r'Z:\scratch\USGS-CERC_2025\00_carp_group_targets\Mosaics'
-    # modelDir = r'D:\redbo_science\projects\USGS-CERC_2025\seg_gym\20250710_v01\fold_0'
     mosaicFileType = '.tif'
     outDirTop = r'Z:\scratch'
-    projName = 'RockMapperTest_24_24'
+    projName = 'RockMapper'
     mapRast = False
     mapShp = True
 
     epsg = 32615
 
-    windowSize_m = (24, 24)
-    window_stride = 9
-    minArea_percent = 0.5
-    threadCnt = 0.25
+    windowSize_m = (18, 18)
+    window_stride = 6
+    minArea_percent = 0.1
+    threadCnt = 0.75
 
     predBatchSize = 30
 
+    minPatchSize_m2 = 18 # Minimum patch size to keep in final shapefile, in square meters
+    smoothShp = True # Smooth final shapefile polygons
+    smoothTol_m = 0.25 # Smoothing tolerance in meters, higher = more smoothing
+
     deleteIntData = True
+
+    
 
 
     ################
@@ -79,7 +83,10 @@ def gui():
         mosaicFileType=mosaicFileType, 
         modelDir=modelDir,
         predBatchSize=predBatchSize,
-        deleteIntData=deleteIntData
+        deleteIntData=deleteIntData,
+        minPatchSize = minPatchSize_m2,
+        smoothShp = smoothShp,
+        smoothTol_m = smoothTol_m,
     )
 
 
@@ -88,3 +95,6 @@ def gui():
 
     print("\n\nGrand Total Processing Time: ", datetime.timedelta(seconds = round(time.time() - start_time, ndigits=0)))
     return
+
+if __name__ == "__main__":
+    gui()

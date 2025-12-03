@@ -17,16 +17,16 @@ gc.enable()
 
 from rockmapper.utils import printUsage#, avg_npz_files, map_npzs
 
-# # Debug
-# pingTilePath = os.path.normpath('../PINGTile')
-# pingTilePath = os.path.abspath(pingTilePath)
-# sys.path.insert(0, pingTilePath)
-# sys.path.insert(0, 'src')
+# Debug
+pingTilePath = os.path.normpath('../PINGTile')
+pingTilePath = os.path.abspath(pingTilePath)
+sys.path.insert(0, pingTilePath)
+sys.path.insert(0, 'src')
 
-# pingSegPath = os.path.normpath('../PINGSeg')
-# pingSegPath = os.path.abspath(pingSegPath)
-# sys.path.insert(0, pingSegPath)
-# sys.path.insert(0, 'src')
+pingSegPath = os.path.normpath('../PINGSeg')
+pingSegPath = os.path.abspath(pingSegPath)
+sys.path.insert(0, pingSegPath)
+sys.path.insert(0, 'src')
 
 from pingtile.mosaic2tile import doMosaic2tile
 from pingtile.utils import avg_npz_files, map_npzs, mosaic_maps, maps2Shp
@@ -53,7 +53,10 @@ def do_work(
             threadCnt: float, 
             mosaicFileType: str,
             predBatchSize: int,
-            deleteIntData: bool=True
+            deleteIntData: bool=True,
+            minPatchSize: float=3,
+            smoothShp: bool=False,
+            smoothTol_m: float=0.5,
         ):
     '''
     '''
@@ -243,72 +246,6 @@ def do_work(
     printUsage()
 
 
-    # # For Debug #
-    # #######################
-    # # Map average npz files
-    # print('\n\nMapping predicted substrate...\n\n')
-    # start_time = time.time()
-
-    # out_maps = os.path.join(outDir, 'preds_mapped_ind_npz')
-
-    # if not os.path.exists(out_maps):
-    #     os.makedirs(out_maps)
-
-    # from shapely.geometry import box
-    # # Create per-row geometry safely from bounds (xmin, ymin, xmax, ymax).
-    # # Passing pandas.Series directly to shapely.box raises TypeError because
-    # # shapely expects scalar floats for each bound. Build a geometry per row,
-    # # coerce to float, and ignore degenerate or invalid rows.
-    # def _make_geom_from_bounds(row):
-    #     try:
-    #         xmin = float(row['x_min'])
-    #         ymin = float(row['y_min'])
-    #         xmax = float(row['x_max'])
-    #         ymax = float(row['y_max'])
-    #         # ignore degenerate boxes or NaNs
-    #         if any(pd.isna([xmin, ymin, xmax, ymax])):
-    #             return None
-    #         if xmin >= xmax or ymin >= ymax:
-    #             return None
-    #         return box(xmin, ymin, xmax, ymax)
-    #     except Exception:
-    #         return None
-
-    # imagesDF['geometry'] = imagesDF.apply(_make_geom_from_bounds, axis=1)
-    # # Drop rows without valid geometry
-    # imagesDF = imagesDF[~imagesDF['geometry'].isnull()].reset_index(drop=True)
-    # # Convert to GeoDataFrame with the provided CRS
-    # imagesDF = gpd.GeoDataFrame(imagesDF, geometry='geometry', crs=f"EPSG:{epsg}")
-
-    # # Make npz column with basename in imagesDF['mosaic'] and out_npz directory
-    # # imagesDF['mosaic'] contains the source image path used for prediction.
-    # # Build the corresponding npz filename (basename + .npz) located in out_npz.
-    # def _npz_path_from_mosaic(p):
-    #     try:
-    #         if pd.isna(p):
-    #             return None
-    #         base = os.path.splitext(os.path.basename(p))[0]
-    #         return os.path.join(out_npz, f"{base}.npz")
-    #     except Exception:
-    #         return None
-
-    # imagesDF['npz'] = imagesDF['mosaic'].apply(_npz_path_from_mosaic)
-
-    # gdf = map_npzs(df=imagesDF, in_dir=out_npz, out_dir=out_maps, outName=projName, windowSize_m=windowSize_m, epsg=epsg)
-
-    # # Delete intermediate data
-    # if deleteIntData:
-    #     to_delete.append(out_maps)
-
-    # print("\nDone!")
-    # print("Time (s):", round(time.time() - start_time, ndigits=1))
-    # printUsage()
-    # # For Debug #
-
-
-
-
-
 
     # # For debug
     # out_npz = os.path.join(outDir, 'preds_npz')
@@ -408,25 +345,11 @@ def do_work(
         if not os.path.exists(out_shp):
             os.makedirs(out_shp)
 
-        maps2Shp(map_files, out_shp, projName, configFile)
+        maps2Shp(map_files, out_shp, projName, configFile, minPatchSize, [1], smoothShp, smoothTol_m)
 
         print("\nDone!")
         print("Time (s):", round(time.time() - start_time, ndigits=1))
         printUsage()
-
-    # #################
-    # # Mask the mosaic
-
-    # print('\n\nMasking final map...\n\n')
-    # start_time = time.time()
-
-    # out_mosaic = os.path.join(out_mosaic, f'{projName}.tif')
-    # out_mask = os.path.join(outDir, 'mask')
-
-    # if not os.path.exists(out_mask):
-    #     os.makedirs(out_mask)
-
-    # mask_mosaic_map()
 
 
     ##########################

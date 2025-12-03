@@ -61,13 +61,13 @@ def do_work(
     '''
     '''
 
-    # debug_ = True  # For development/debugging
+    _debug = False  # For development/debugging
 
     start_time = time.time()
 
     outDir = os.path.join(outDirTop, projName)
 
-    if os.path.exists(outDir) and not debug_:
+    if os.path.exists(outDir) and not _debug:
         shutil.rmtree(outDir)
 
     if not os.path.exists(outDir):
@@ -198,7 +198,7 @@ def do_work(
 
     # For debug
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tiles.csv')
-    if debug_:
+    if not deleteIntData:
         imagesDF.to_csv(outDF, index=False)
 
     # Delete intermediate data
@@ -213,7 +213,7 @@ def do_work(
 
 
     # For Debug
-    if debug_:
+    if not deleteIntData:
         imagesDF = pd.read_csv(outDF)
         print(len(imagesDF))
 
@@ -230,7 +230,7 @@ def do_work(
 
     # For debug
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
-    if debug_:
+    if not deleteIntData:
         imagesDF.to_csv(outDF, index=False)
 
     # Delete intermediate data
@@ -246,7 +246,7 @@ def do_work(
     # For debug
     out_npz = os.path.join(outDir, 'preds_npz')
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')
-    if debug_:
+    if not deleteIntData:
         imagesDF = pd.read_csv(outDF)
 
     ###############################
@@ -263,7 +263,7 @@ def do_work(
 
     # # Debug: Save df
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
-    if debug_:
+    if not deleteIntData:
         gdf.to_csv(outDF, index=False)
 
     # Delete intermediate data
@@ -278,7 +278,7 @@ def do_work(
     # For debug
     out_avg_npz = os.path.join(outDir, 'preds_avg_npz')
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
-    if debug_:
+    if not deleteIntData:
         gdf = pd.read_csv(outDF)
 
 
@@ -305,7 +305,7 @@ def do_work(
 
     # Debug: Save df
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_mapped_npzs.csv')
-    if debug_:
+    if not deleteIntData:
         gdf.to_csv(outDF, index=False) 
 
     #############
@@ -357,7 +357,7 @@ def do_work(
     # First do garbage collection to close any open files
     gc.collect()
 
-    if deleteIntData and not debug_:
+    if deleteIntData and not not deleteIntData:
         print('\n\nDeleting intermediate data...\n\n')
         start_time = time.time()
 

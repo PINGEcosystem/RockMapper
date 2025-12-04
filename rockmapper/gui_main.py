@@ -29,27 +29,27 @@ def gui():
     # Hard coding for development
     seg_model = 'RockMapper_20251117_v2'
     # seg_model = 'RockMapper_20250628_v1'
-    inDir = r'D:\scratch\202511_BrushDeepKiamichi_SubstrateShadow'
+    inDir = r'Z:\scratch\RockMapper_Debug\mosaics'
     mosaicFileType = '.tif'
-    outDirTop = r'Z:\scratch'
-    projName = 'RockMapper'
-    mapRast = False
+    outDirTop = r'Z:\scratch\RockMapper_Debug'
+    projName = '20250412_smthShp_test'
+    mapRast = True
     mapShp = True
 
     epsg = 32615
 
     windowSize_m = (18, 18)
     window_stride = 6
-    minArea_percent = 0.1
+    minArea_percent = 0.75
     threadCnt = 0.75
 
     predBatchSize = 30
 
     minPatchSize_m2 = 18 # Minimum patch size to keep in final shapefile, in square meters
     smoothShp = True # Smooth final shapefile polygons
-    smoothTol_m = 0.25 # Smoothing tolerance in meters, higher = more smoothing
+    smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
-    deleteIntData = True
+    deleteIntData = False
 
     
 

@@ -80,14 +80,14 @@ def gui():
 
     windowSize_m = (18, 18)
     window_stride = 6
-    minArea_percent = 0.1
+    minArea_percent = 0.75
     threadCnt = 0.75
 
     predBatchSize = 30
 
     minPatchSize_m2 = 18 # Minimum patch size to keep in final shapefile, in square meters
     smoothShp = True # Smooth final shapefile polygons
-    smoothTol_m = 0.25 # Smoothing tolerance in meters, higher = more smoothing
+    smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
     deleteIntData = True
 
@@ -141,6 +141,7 @@ if __name__ == "__main__":
 3. Update the Parameters as necessary:
 
 ```python
+#############################
 # Update Parameters
 seg_model = 'RockMapper_20250628_v1' # Don't update
 inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics'
@@ -150,14 +151,18 @@ projName = 'RockMapperTest'
 mapRast = False
 mapShp = True
 
-epsg = 32616
+epsg = 32615
 
 windowSize_m = (18, 18)
-window_stride = 9
+window_stride = 6
 minArea_percent = 0.75
-threadCnt = 0.25
+threadCnt = 0.75
 
 predBatchSize = 30
+
+minPatchSize_m2 = 18 # Minimum patch size to keep in final shapefile, in square meters
+smoothShp = True # Smooth final shapefile polygons
+smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
 deleteIntData = True
 ```

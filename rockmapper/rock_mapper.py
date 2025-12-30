@@ -145,7 +145,7 @@ def do_work(
     minArea = minArea_percent * windowSize_m[0]*windowSize_m[1]
 
     # Delete intermediate data
-    to_delete = []
+    to_delete = {}
 
     # Make output image dir
     dirName = projName
@@ -203,7 +203,7 @@ def do_work(
 
     # Delete intermediate data
     if deleteIntData:
-        to_delete.append(outSonDir)
+        to_delete['outSonDir'] = [outSonDir]
 
     print('Image Tiles Generated: {}'.format(len(imagesDF)))
 
@@ -235,7 +235,11 @@ def do_work(
 
     # Delete intermediate data
     if deleteIntData:
-        to_delete.append(out_npz)
+        to_delete['out_npz'] = [out_npz]
+
+        # Delete tiled images
+        shutil.rmtree(outSonDir, ignore_errors=True)
+
 
     print("\nPrediction Complete!")
     print("Time (s):", round(time.time() - start_time, ndigits=1))
@@ -268,7 +272,10 @@ def do_work(
 
     # Delete intermediate data
     if deleteIntData:
-        to_delete.append(out_avg_npz)
+        to_delete['out_avg_npz'] = [out_avg_npz]
+
+        # Delete npz predictions
+        shutil.rmtree(out_npz, ignore_errors=True)
 
     print("\nDone!")
     print("Time (s):", round(time.time() - start_time, ndigits=1))
@@ -296,7 +303,8 @@ def do_work(
 
     # Delete intermediate data
     if deleteIntData:
-        to_delete.append(out_maps)
+        # Delete avg npz predictions
+        shutil.rmtree(out_avg_npz, ignore_errors=True)
 
     print("\nDone!")
     print("Time (s):", round(time.time() - start_time, ndigits=1))
@@ -307,6 +315,10 @@ def do_work(
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_mapped_npzs.csv')
     if not deleteIntData:
         gdf.to_csv(outDF, index=False) 
+
+    # Queue mapped tiles for cleanup after exports complete
+    if deleteIntData:
+        to_delete['out_maps'] = [out_maps]
 
     #############
     # Mosaic maps
@@ -357,28 +369,14 @@ def do_work(
     # First do garbage collection to close any open files
     gc.collect()
 
-    if deleteIntData and not not deleteIntData:
+    if deleteIntData:
         print('\n\nDeleting intermediate data...\n\n')
         start_time = time.time()
 
-        for d in to_delete:
-            shutil.rmtree(d, ignore_errors=True)
-
-        for d in to_delete:
-            shutil.rmtree(d, ignore_errors=True)
-
-        for d in to_delete:
-            for root, dirs, files in os.walk(d, topdown=False):
-                for name in files:
-                    try:
-                        os.remove(os.path.join(root, name))
-                    except Exception as e:
-                        print(f"Error deleting file {os.path.join(root, name)}: {e}")
-                for name in dirs:
-                    try:
-                        os.rmdir(os.path.join(root, name))
-                    except Exception as e:
-                        print(f"Error deleting directory {os.path.join(root, name)}: {e}")
+        for name, paths in to_delete.items():
+            for path in paths:
+                print(f"Deleting intermediate data: {name} -> {path}")
+                shutil.rmtree(path, ignore_errors=True)
 
         print("\nDone!")
         print("Time (s):", round(time.time() - start_time, ndigits=1))

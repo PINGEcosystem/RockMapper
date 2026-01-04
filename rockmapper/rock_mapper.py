@@ -299,7 +299,10 @@ def do_work(
     if not os.path.exists(out_maps):
         os.makedirs(out_maps)
 
-    gdf = map_npzs(df=gdf, in_dir=out_avg_npz, out_dir=out_maps, outName=projName, windowSize_m=windowSize_m, epsg=epsg, threadCnt=threadCnt)
+    # For minPatchSize in map tile, use 1/4 the minPatchSize to remedy hard edge between tiles
+    minPatchSize_tile = minPatchSize / 4.0
+
+    gdf = map_npzs(df=gdf, in_dir=out_avg_npz, out_dir=out_maps, outName=projName, minPatchSize=minPatchSize_tile, windowSize_m=windowSize_m, epsg=epsg, threadCnt=threadCnt)
 
     # Delete intermediate data
     if deleteIntData:

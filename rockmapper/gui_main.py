@@ -49,7 +49,7 @@ def gui():
     smoothShp = True # Smooth final shapefile polygons
     smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
-    deleteIntData = False
+    deleteIntData = True
 
     
 

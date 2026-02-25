@@ -1,4 +1,4 @@
-# <img width="150" height="150" alt="1FAA8_color" src="https://github.com/user-attachments/assets/b79cfeb7-396e-42ae-9867-8abff79679f2" /> ROCKMapper
+# <img width="100" height="100" alt="1FAA8_color" src="https://github.com/user-attachments/assets/b79cfeb7-396e-42ae-9867-8abff79679f2" /> ROCKMapper
 
 
 # 🚧**UNDER CONSTRUCTION**🚧

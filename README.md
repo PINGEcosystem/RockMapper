@@ -20,6 +20,7 @@ Interface for predicting and mapping benthic habitat (substrates) from any side-
 ### Journal Article
 
 Wolfenkoehler, W. A., Bodine, C. S., & Long, J. M. (forthcoming). Evaluating RockMapper: A software to automatically map aquatic substrate from sonar images.
+
 In this paper RockMapper was evaluated by comparing output maps to those made by manual methods, allowing future substrate delineators to better understand the potential strengths or limitations of each approach. Automated mapping resulted in similar accuracy to manual methods, which ranged between 61-98%, while also saving over 11 minutes per hectare of manual delineation time. Additionally, RockMapper appeared to generalize well to new rivers, indicating reproducibility to unseen datasets. 
 
 ## Installation

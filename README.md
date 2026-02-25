@@ -13,7 +13,7 @@ Interface for predicting and mapping benthic habitat (substrates) from any side-
 
 ## Overview
 
-`RockMapper` is an open-source Python interface for automatically predicting and mapping rock from any side-scan sonar mosaic(s). `RockMapper` leverages SegFormer pre-trained models fine-tuned with [Segmentation Gym](https://github.com/Doodleverse/segmentation_gym) to automatically classify "rocky" substrate defined as any hard particle greater than 2 mm in size. 'RockMapper' uses the Udden-Wentworth grain size scale when classifying substrate into four classes: other (fines <2mm), gravel (2mm - 64mm), boulder/cobble (>64mm ), and bedrock (unfractured hard substrates) (Wentworth 1922).
+`RockMapper` is an open-source Python interface for automatically predicting and mapping rock from any side-scan sonar mosaic(s). `RockMapper` leverages SegFormer pre-trained models fine-tuned with [Segmentation Gym](https://github.com/Doodleverse/segmentation_gym) to automatically classify "rocky" substrate- defined as any hard particle greater than 2 mm in size. 'RockMapper' uses the Udden-Wentworth grain size scale when classifying substrate into four classes: other (fines <2mm), gravel (2mm - 64mm), boulder/cobble (>64mm ), and bedrock (unfractured hard substrates) (Wentworth 1922).
 
 ## Published Documentation
 

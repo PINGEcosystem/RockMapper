@@ -1,6 +1,6 @@
 #<h1>
-  <img width="100" height="100" style="vertical-align: lower;" alt="rock" src="https://github.com/user-attachments/assets/2c533e29-b741-4433-86f6-ab88fa27cd8f" />
-  <span style="font-size: 56px; vertical-align: middle;">RockMapper</span>
+  <img width="100" height="100" style="vertical-align: text-bottom;" alt="rock" src="https://github.com/user-attachments/assets/2c533e29-b741-4433-86f6-ab88fa27cd8f" />
+  <span style="font-size: 56px; vertical-align: middle;">ROCKMapper</span>
 </h1>
 
 

@@ -1,7 +1,7 @@
 # <img width="100" height="100" alt="1FAA8_color" src="https://github.com/user-attachments/assets/b79cfeb7-396e-42ae-9867-8abff79679f2" /> RockMapper
 
 
-# 🚧**UNDER CONSTRUCTION**🚧
+# 🚧**UNDER CONSTRUCTION GUI Forthcoming**🚧
 
 [![PyPI - Version](https://img.shields.io/pypi/v/rockmapper?style=flat-square&label=Latest%20Version%20(PyPi))](https://pypi.org/project/rockmapper/)
 [![GitHub last commit](https://img.shields.io/github/last-commit/PINGEcosystem/GhostVision)](https://github.com/PINGEcosystem/GhostVision/commits)

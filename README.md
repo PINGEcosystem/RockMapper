@@ -23,6 +23,10 @@ Wolfenkoehler, W. A., Bodine, C. S., & Long, J. M. (forthcoming). Evaluating `Ro
 
 In this study `RockMapper` was evaluated by comparing output maps to those made by manual methods, allowing future substrate delineators to better understand the potential strengths or limitations of each approach. `RockMapper` mapping resulted in similar accuracy to manual methods, which ranged between 61-98%, while also saving ~ 11 minutes per hectare of manual delineation time. Additionally, `RockMapper` appeared to generalize well to new rivers, indicating reproducibility to unseen datasets. 
 
+### Training Data
+
+Wolfenkoehler, W., and Long, J., 2026, Substrate classifications of three rivers in eastern Oklahoma: U.S. Geological Survey data release, https://doi.org/10.5066/P1CZGXSF
+
 ## Installation
 
 1. Install [`Miniforge`](https://conda-forge.org/download/).

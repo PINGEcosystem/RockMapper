@@ -21,7 +21,7 @@ dependencies:
       - psutil
       - tensorflow
       - tf-keras
+      # - transformers==4.46.3
       - transformers<5
-      - torch
       - opencv-python
       - rsa

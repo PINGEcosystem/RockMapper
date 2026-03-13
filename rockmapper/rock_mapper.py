@@ -226,7 +226,17 @@ def do_work(
 
     out_npz = os.path.join(outDir, 'preds_npz')
 
-    imagesDF = seg_gym_folder(imgDF=imagesDF, modelDir=modelDir, out_dir=out_npz, batch_size=predBatchSize, threadCnt=threadCnt)
+    try:
+        imagesDF = seg_gym_folder(imgDF=imagesDF, modelDir=modelDir, out_dir=out_npz, batch_size=predBatchSize, threadCnt=threadCnt)
+    except ImportError as e:
+        msg = str(e)
+        if 'SegformerForSemanticSegmentation requires the PyTorch library' in msg or 'TFSegformerForSemanticSegmentation' in msg:
+            raise RuntimeError(
+                'SegFormer dependencies are not available in this environment. '
+                'Install a compatible stack, e.g. pip install "transformers<5" torch tensorflow tf-keras, '
+                'then restart Python and rerun RockMapper.'
+            ) from e
+        raise
 
     # For debug
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_tileseg.csv')

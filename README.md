@@ -76,7 +76,7 @@ def gui():
     #############################
     # Update Parameters
     seg_model = 'RockMapper_20251117_v2' 
-    inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics' #input folder where the sonar mosaic you wish to process is placed
+    inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics' #location of the sonar mosaic you wish to process
     mosaicFileType = '.tif'
     outDirTop = r'Z:\scratch' #output folder where you wish to place the RockMapper substrate shapefile
     projName = 'RockMapperTest'
@@ -151,7 +151,7 @@ if __name__ == "__main__":
 #############################
 # Update Parameters
 seg_model = 'RockMapper_20251117_v2' 
-inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics' #input folder where the sonar mosaic you wish to process is placed
+inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics' #location of the sonar mosaic you wish to process
 mosaicFileType = '.tif'
 outDirTop = r'Z:\scratch' #output folder where you wish to place the RockMapper substrate shapefile
 projName = 'RockMapperTest'

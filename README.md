@@ -42,7 +42,7 @@ Wolfenkoehler, W., and Long, J., 2026, Substrate classifications of three rivers
 
 ## Usage
 
-1. Copy the following script to some location on your computer:
+1. Copy the following script to some location on your computer and name it "RockMapper.py":
 
 ```python
 
@@ -75,7 +75,7 @@ def gui():
     # FOR DEVELOPMENT
     #############################
     # Update Parameters
-    seg_model = 'RockMapper_20250628_v1' # Don't update
+    seg_model = 'RockMapper_20251117_v2' 
     inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics'
     mosaicFileType = '.tif'
     outDirTop = r'Z:\scratch'
@@ -83,7 +83,7 @@ def gui():
     mapRast = False
     mapShp = True
 
-    epsg = 32615
+    epsg = 32615 # change to desired cooordinate system
 
     windowSize_m = (18, 18)
     window_stride = 6
@@ -92,7 +92,7 @@ def gui():
 
     predBatchSize = 30
 
-    minPatchSize_m2 = 18 # Minimum patch size to keep in final shapefile, in square meters
+    minPatchSize_m2 = 5 # Minimum patch size to keep in final shapefile, in square meters
     smoothShp = True # Smooth final shapefile polygons
     smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
@@ -106,7 +106,7 @@ def gui():
     modelDir = os.path.join(GV_UTILS_DIR, 'models')
 
     # RockMapper
-    if seg_model == 'RockMapper_20250628_v1':
+    if seg_model in ['RockMapper_20250628_v1', 'RockMapper_20251117_v2']:
         from rockmapper.rock_mapper import do_work
 
         modelDir = os.path.join(modelDir, seg_model)
@@ -150,7 +150,7 @@ if __name__ == "__main__":
 ```python
 #############################
 # Update Parameters
-seg_model = 'RockMapper_20250628_v1' # Don't update
+seg_model = 'RockMapper_20251117_v2' 
 inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics'
 mosaicFileType = '.tif'
 outDirTop = r'Z:\scratch'
@@ -158,7 +158,7 @@ projName = 'RockMapperTest'
 mapRast = False
 mapShp = True
 
-epsg = 32615
+epsg = 32615 # change to desired cooordinate system
 
 windowSize_m = (18, 18)
 window_stride = 6
@@ -167,12 +167,14 @@ threadCnt = 0.75
 
 predBatchSize = 30
 
-minPatchSize_m2 = 18 # Minimum patch size to keep in final shapefile, in square meters
+minPatchSize_m2 = 5 # Minimum patch size to keep in final shapefile, in square meters
 smoothShp = True # Smooth final shapefile polygons
 smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
 deleteIntData = True
 ```
 
-4. Ensure the `rockmapper` environment is selected as the Interpreter [see this](https://stackoverflow.com/a/76289404).
-5. Run the script in debug mode by pressing `F5`.
+4. Open Mini Forge Prompt
+5. type "conda activate rockmapper"
+6. change the directory to the folder where the python sciprt is located
+7. Run the script by typing "python RockMapper.py" 

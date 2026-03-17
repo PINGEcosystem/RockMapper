@@ -176,5 +176,5 @@ deleteIntData = True
 
 4. Open Mini Forge Prompt
 5. type "conda activate rockmapper"
-6. change the directory to the folder where the python sciprt is located
+6. change the directory to the folder where the python script is located
 7. Run the script by typing "python RockMapper.py" 

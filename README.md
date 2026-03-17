@@ -76,12 +76,12 @@ def gui():
     #############################
     # Update Parameters
     seg_model = 'RockMapper_20251117_v2' 
-    inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics'
+    inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics' #input folder where the sonar mosaic you wish to process is placed
     mosaicFileType = '.tif'
-    outDirTop = r'Z:\scratch'
+    outDirTop = r'Z:\scratch' #output folder where you wish to place the RockMapper substrate shapefile
     projName = 'RockMapperTest'
-    mapRast = False
-    mapShp = True
+    mapRast = False #do you want a raster output?
+    mapShp = True #do you want a shapefile output? 
 
     epsg = 32615 # change to desired cooordinate system
 
@@ -151,12 +151,12 @@ if __name__ == "__main__":
 #############################
 # Update Parameters
 seg_model = 'RockMapper_20251117_v2' 
-inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics'
+inDir = r'Z:\scratch\202506_BrushyDeepKiamichi_Substrate\mosaics' #input folder where the sonar mosaic you wish to process is placed
 mosaicFileType = '.tif'
-outDirTop = r'Z:\scratch'
+outDirTop = r'Z:\scratch' #output folder where you wish to place the RockMapper substrate shapefile
 projName = 'RockMapperTest'
-mapRast = False
-mapShp = True
+mapRast = False #do you want a raster output?
+mapShp = True #do you want a shapefile output? 
 
 epsg = 32615 # change to desired cooordinate system
 

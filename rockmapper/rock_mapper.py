@@ -4,9 +4,20 @@ Copyright (c) 2025 Cameron S. Bodine
 
 #########
 # Imports
-import os
+import os, sys
 
 from rockmapper.utils import printUsage#, avg_npz_files, map_npzs
+
+# Debug
+pingTilePath = os.path.normpath('../PINGTile')
+pingTilePath = os.path.abspath(pingTilePath)
+sys.path.insert(0, pingTilePath)
+sys.path.insert(0, 'src')
+
+pingSegPath = os.path.normpath('../PINGSeg')
+pingSegPath = os.path.abspath(pingSegPath)
+sys.path.insert(0, pingSegPath)
+sys.path.insert(0, 'src')
 
 from pingtile.mapper_workflow import run_mapper_workflow
 
@@ -39,8 +50,9 @@ def do_work(
     '''
     '''
 
-    def _predict_tiles_rock(imagesDF, modelDir, out_npz, predBatchSize, threadCnt):
-        # RockMapper intentionally uses the Segmentation Gym backend.
+    def _predict_tiles_rock(imagesDF, modelDir, out_npz, predBatchSize, threadCnt, image_norm_method=None):
+        # RockMapper intentionally uses the Segmentation Gym backend, which
+        # normalizes internally, so image_norm_method is accepted but unused.
         # Keep existing user-facing error handling around dependency issues.
         try:
             from pingseg.seg_gym import seg_gym_folder

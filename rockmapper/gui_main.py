@@ -27,12 +27,21 @@ def gui():
     # FOR DEVELOPMENT
     #############################
     # Hard coding for development
+    # seg_model = 'RockMapper_20251117_v2'
+    # # seg_model = 'RockMapper_20250628_v1'
+    # inDir = r'Z:\scratch\RockMapper_Debug\mosaics'
+    # mosaicFileType = '.tif'
+    # outDirTop = r'Z:\scratch\RockMapper_Debug'
+    # projName = '20250412_smthShp_test'
+    # mapRast = True
+    # mapShp = True
+
+    # Hard coding for development
     seg_model = 'RockMapper_20251117_v2'
-    # seg_model = 'RockMapper_20250628_v1'
-    inDir = r'Z:\scratch\RockMapper_Debug\mosaics'
+    inDir = r'/mnt/z/tmp/carpscouter_pred_test_20260922/mosaic'
     mosaicFileType = '.tif'
-    outDirTop = r'Z:\scratch\RockMapper_Debug'
-    projName = '20250412_smthShp_test'
+    outDirTop = r'/mnt/z/tmp/carpscouter_pred_test_20260922'
+    projName = '20260922_rockmapper_test'
     mapRast = True
     mapShp = True
 

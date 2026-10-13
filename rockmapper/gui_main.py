@@ -38,17 +38,17 @@ def gui():
 
     # Hard coding for development
     seg_model = 'RockMapper_20251117_v2'
-    inDir = r'/mnt/z/tmp/carpscouter_pred_test_20260922/mosaic'
+    inDir = r'/mnt/c/Users/cbodine/Desktop/KenchreaiMosaic'
     mosaicFileType = '.tif'
-    outDirTop = r'/mnt/z/tmp/carpscouter_pred_test_20260922'
-    projName = '20260922_rockmapper_test'
+    outDirTop = r'/mnt/c/Users/cbodine/Desktop/KenchreaiRockmapper'
+    projName = 'kenchreai_rockmapper'
     mapRast = True
     mapShp = True
 
-    epsg = 32615
+    epsg = 2100
 
     windowSize_m = (18, 18)
-    window_stride = 6
+    window_stride = 18
     minArea_percent = 0.75
     threadCnt = 0.75
 
@@ -59,6 +59,9 @@ def gui():
     smoothTol_m = 0.3 # Smoothing tolerance in meters, higher = more smoothing
 
     deleteIntData = True
+
+    # True averages/exports each transect separately; False combines transects.
+    keepIndividualMaps = False
 
     
 
@@ -93,6 +96,7 @@ def gui():
         modelDir=modelDir,
         predBatchSize=predBatchSize,
         deleteIntData=deleteIntData,
+        keepIndividualMaps=keepIndividualMaps,
         minPatchSize = minPatchSize_m2,
         smoothShp = smoothShp,
         smoothTol_m = smoothTol_m,

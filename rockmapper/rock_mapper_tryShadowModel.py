@@ -55,7 +55,8 @@ def do_work(
             threadCnt: float, 
             mosaicFileType: str,
             predBatchSize: int,
-            deleteIntData: bool=True
+            deleteIntData: bool=True,
+            keepIndividualMaps: bool=False,
         ):
     '''
     '''
@@ -216,6 +217,24 @@ def do_work(
 
     # For Debug
     imagesDF = pd.read_csv(outDF)
+    if keepIndividualMaps and 'source_mosaic' not in imagesDF.columns:
+        def _source_for_tile(tile_path):
+            tile_stem = os.path.splitext(os.path.basename(tile_path))[0]
+            candidates = [
+                os.path.splitext(os.path.basename(mosaic))[0]
+                for mosaic in mosaics
+                if tile_stem.startswith(
+                    f"{projName}_{os.path.splitext(os.path.basename(mosaic))[0]}"
+                )
+            ]
+            if not candidates:
+                raise ValueError(
+                    f"Cannot identify source mosaic for tile {tile_path!r}; "
+                    'regenerate the tiles CSV with current PINGTile.'
+                )
+            return max(candidates, key=len)
+
+        imagesDF['source_mosaic'] = imagesDF['mosaic'].map(_source_for_tile)
     print(len(imagesDF))
 
     ###################
@@ -442,7 +461,23 @@ def do_work(
     if not os.path.exists(out_avg_npz):
         os.makedirs(out_avg_npz)
 
-    gdf = avg_npz_files(df=imagesDF, in_dir=out_npz, out_dir=out_avg_npz, outName=projName, windowSize_m=windowSize_m, stride=windowSize_m[0], epsg=epsg, threadCnt=threadCnt)
+    if keepIndividualMaps:
+        avg_results = [
+            avg_npz_files(
+                df=source_df.reset_index(drop=True),
+                in_dir=out_npz,
+                out_dir=out_avg_npz,
+                outName=projName,
+                windowSize_m=windowSize_m,
+                stride=windowSize_m[0],
+                epsg=epsg,
+                threadCnt=threadCnt,
+            )
+            for _, source_df in imagesDF.groupby('source_mosaic')
+        ]
+        gdf = pd.concat(avg_results, axis=0, ignore_index=True)
+    else:
+        gdf = avg_npz_files(df=imagesDF, in_dir=out_npz, out_dir=out_avg_npz, outName=projName, windowSize_m=windowSize_m, stride=windowSize_m[0], epsg=epsg, threadCnt=threadCnt)
 
     outDF = os.path.join(outDir, f'{projName}_{windowSize_m[0]}_{windowSize_m[1]}_avgnpz.csv')
     gdf.to_csv(outDF, index=False)
@@ -476,7 +511,7 @@ def do_work(
     gdf = map_npzs(df=gdf, in_dir=out_avg_npz, out_dir=out_maps, outName=projName, windowSize_m=windowSize_m, epsg=epsg, threadCnt=threadCnt)
 
     # Delete intermediate data
-    if deleteIntData:
+    if deleteIntData and not keepIndividualMaps:
         to_delete.append(out_maps)
 
     print("\nDone!")
@@ -503,7 +538,13 @@ def do_work(
         if not os.path.exists(out_mosaic):
             os.makedirs(out_mosaic)
 
-        mosaic_maps(map_files, out_mosaic, projName)
+        if keepIndividualMaps:
+            for source_name, group in gdf.groupby('source_mosaic'):
+                source_maps = group['map_tif'].dropna().tolist()
+                if source_maps:
+                    mosaic_maps(source_maps, out_mosaic, f'{projName}_{source_name}')
+        else:
+            mosaic_maps(map_files, out_mosaic, projName)
 
         print("\nDone!")
         print("Time (s):", round(time.time() - start_time, ndigits=1))
@@ -524,7 +565,13 @@ def do_work(
         if not os.path.exists(out_shp):
             os.makedirs(out_shp)
 
-        maps2Shp(map_files, out_shp, projName, configFile)
+        if keepIndividualMaps:
+            for source_name, group in gdf.groupby('source_mosaic'):
+                source_maps = group['map_tif'].dropna().tolist()
+                if source_maps:
+                    maps2Shp(source_maps, out_shp, f'{projName}_{source_name}', configFile)
+        else:
+            maps2Shp(map_files, out_shp, projName, configFile)
 
         print("\nDone!")
         print("Time (s):", round(time.time() - start_time, ndigits=1))
